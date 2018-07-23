@@ -1,0 +1,16 @@
+kubectl -n kafka delete deployment sangrenel
+kubectl -n kafka logs -f "$(kubectl -n kafka get pod | grep 'sangrenel' | awk '{print $1}' | head -1)"
+
+
+sangrenel \
+	-api-version="1.0.0.0" \
+	-brokers="broker.kafka.svc.cluster.local:9092" \
+	-interval="5" \
+	-message-batch-size="100" \
+	-message-size="1024" \
+	-noop="true" \
+	-produce-rate=350000 \
+	-required-acks="local" \
+	-topic="dummy" \
+	-workers="50" \
+	-writers-per-worker="1"

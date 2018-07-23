@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:    
+  labels:
+    app: sangrenel    
+  name: sangrenel
+  namespace: kafka  
+spec:  
+  replicas: 6
+  selector:
+    matchLabels:
+      app: sangrenel        
+  template:
+    metadata:      
+      labels:
+        app: sangrenel        
+    spec:
+      containers:
+      - env:
+        - name: API_VERSION
+          value: "1.0.0.0"
+        - name: BROKERS
+          value: "broker.kafka.svc.cluster.local:9092"
+        - name: INTERVAL
+          value: "5"
+        - name: COMPRESSION
+          value: "none"
+        - name: MESSAGE_BATCH_SIZE
+          value: "100"
+        - name: MESSAGE_SIZE          
+          value: "1024"
+        - name: NOOP
+          value: "false"
+        - name: PRODUCE_RATE
+          value: "20000"
+        - name: REQUIRED_ACKS
+          value: "local"
+        - name: TOPIC
+          value: "10-partitions"
+        - name: WORKERS
+          value: "2"
+        - name: WRITERS_PER_WORKER
+          value: "25"        
+        image: albertocsm/sangrenel:latest
+        imagePullPolicy: Always
+        name: sangrenel
+      nodeSelector:
+        app: sangrenel
+      tolerations:
+      - effect: NoSchedule
+        key: app
+        operator: Equal
+        value: sangrenel
